@@ -1,6 +1,6 @@
 graph {
 graph [layout=circo]
-x [style="filled", fillcolor=white]
+x [style="filled", fillcolor=lightpink]
 y [style="filled", fillcolor=white]
 z [style="filled", fillcolor=white]
 x -- z

@@ -3,6 +3,8 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
+#include "InterferenceGraph.hpp"
 
 namespace shindler::ics46::project6 {
 
@@ -12,6 +14,10 @@ using RegisterAssignment = std::unordered_map<Variable, Register>;
 
 RegisterAssignment assignRegisters(const std::string &pathToGraph,
                                    int numRegisters) noexcept;
+
+// void sortDescendingByDegree(std::vector<Variable>& vertices);
+
+// void heapify(std::vector<Variable>& vertices, size_t index);
 
 };  // namespace shindler::ics46::project6
 

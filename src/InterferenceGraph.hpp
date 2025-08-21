@@ -3,7 +3,10 @@
 
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
+#include <vector>
+#include <ranges>
 
 namespace shindler::ics46::project6 {
 
@@ -34,6 +37,44 @@ class InterferenceGraph {
     // used in the utility function for reading and writing
     // the graph structure to/from files. You don't need to use it.
     using EdgeTy = std::pair<T, T>;
+
+    // priorities: 
+    // speed of adding edges (to hit 1000 vertices)
+    // speed of adding vertices 
+    // speed of sorting (so ease in computing degree, or pre-sorted by degree)
+
+    // Idea 1: adjacency matrix
+    // std::vector<std::vector<T>> adj;
+    // std::vector<T> vertices; 
+
+    // speed of adding edges - this is O(n), i would need to find indexes of vertices first
+    // speed of adding vertices - O(1) or O(n) - depends on time complexity of adding a vector with all 0's of given size
+    // speed of sorting (so ease in computing degree, or pre-sorted by degree) - O(1) - just size
+
+    // Idea 2: adjacency list with a vector
+    // std::unordered_map<T, std::vector<T>> adj;
+
+    // speed of adding edges - this is O(1), i just push back on vector at given key
+    // speed of adding vertices - O(1) - i just have an empty vertex added
+    // speed of sorting (so ease in computing degree, or pre-sorted by degree) - O(1) - just size of the vector
+    // do note speed of SEARCHING (check if this edge exists) is O(degree)
+
+    // Idea 3: adjacency list with a unordered set
+    std::unordered_map<T, std::unordered_set<T>> adj;
+
+    // speed of adding edges - this is O(1)
+    // speed of adding vertices - O(1)
+    // speed of sorting (so ease in computing degree, or pre-sorted by degree) - O(n) - just size
+    // do note speed of SEARCHING (check if this edge exists) is O(1)
+
+
+    unsigned int numberOfEdges;
+    unsigned int numberOfVertices;
+    //this matrix assigns every edge, and every vector row ends in the sum of all the edges
+    //(ease of degree computation?)
+    
+
+
 
     InterferenceGraph();
 
@@ -71,69 +112,100 @@ class InterferenceGraph {
 
 template <typename T>
 InterferenceGraph<T>::InterferenceGraph() {
-    // TODO: Implement this
+   
 }
 
 template <typename T>
 InterferenceGraph<T>::~InterferenceGraph() {
-    // TODO: Implement this
+    
 }
 
 template <typename T>
 std::unordered_set<T> InterferenceGraph<T>::neighbors(const T &vertex) const {
-    // TODO: Implement this
-    return {};
+    return adj.at(vertex);
 }
 
 template <typename T>
 std::unordered_set<T> InterferenceGraph<T>::vertices() const noexcept {
-    // TODO: Implement this
-    return {};
+    std::unordered_set<T> vertex;
+    vertex.reserve(adj.size());
+    for (auto& [vert, edges] : adj) 
+    { 
+        vertex.insert(vert); 
+    }
+    return vertex;
 }
 
 template <typename T>
 unsigned InterferenceGraph<T>::numVertices() const noexcept {
-    // TODO: Implement this
-    return {};
+    return numberOfVertices;
 }
 
 template <typename T>
 unsigned InterferenceGraph<T>::numEdges() const noexcept {
-    // TODO: Implement this
-    return {};
+    return numberOfEdges;
 }
 
 template <typename T>
 void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
-    // TODO: Implement this
+    if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+    }
+    adj[source].insert(destination);
+    adj[destination].insert(source);
+    ++numberOfEdges;
 }
 
 template <typename T>
 void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
-    // TODO: Implement this
+    if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+    }
+    adj[source].erase(adj[source].find(destination));
+    adj[destination].erase(adj[destination].find(source));
+    --numberOfEdges;
 }
 
 template <typename T>
 void InterferenceGraph<T>::addVertex(const T &vertex) {
-    // TODO: Implement this
+//     (void) adj[vertex]; //hopefully allowed 
+    if(adj.find(vertex) != adj.end())
+    {
+        return;
+    }
+    (void) adj[vertex];
+    ++numberOfVertices;
 }
 
 template <typename T>
 void InterferenceGraph<T>::removeVertex(const T &vertex) {
-    // TODO: Implement this
+    if(adj.find(vertex) == adj.end())
+    {
+        return;
+    }
+    adj.erase(vertex);
+    --numberOfVertices;
 }
 
 template <typename T>
 bool InterferenceGraph<T>::interferes(const T &source,
                                       const T &destination) const {
-    // TODO: Implement this
-    return {};
+    if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+    }
+    return adj[source].find(destination) != adj[source].end();
 }
 
 template <typename T>
 unsigned InterferenceGraph<T>::degree(const T &vertex) const {
-    // TODO: Implement this
-    return {};
+    if(adj.find(vertex) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+    }
+    return adj.at(vertex).size();
 }
 
 }  // namespace shindler::ics46::project6
