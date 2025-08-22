@@ -26,6 +26,66 @@ TEST_CASE("SimpleSuccess", "[Required][RA]") {
     REQUIRE((verifyAllocation(GRAPH, NUM_REGS, allocation)));
 }
 
+TEST_CASE("Complete6Success", "[Required][RA]") {
+    // Load the graph pointed to by simple.csv
+    const auto &GRAPH = GRAPH_DIR + "complete_6.csv";
+    const auto NUM_REGS = 10;
+
+    // Provide 3 registers to the register allocation algorithm.
+    // Note, the highest degree in this graph is two, so all three
+    // will be needed.
+    const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
+    proj6::IGWriter::write(proj6::CSVReader::load(GRAPH),
+                           GRAPH_DIR + "complete_6.dot", allocation);
+
+    REQUIRE((verifyAllocation(GRAPH, NUM_REGS, allocation)));
+}
+
+TEST_CASE("BigBipartiteSuccess", "[Required][RA]") {
+    // Load the graph pointed to by simple.csv
+    const auto &GRAPH = GRAPH_DIR + "big_bipartite.csv";
+    const auto NUM_REGS = 10;
+
+    // Provide 3 registers to the register allocation algorithm.
+    // Note, the highest degree in this graph is two, so all three
+    // will be needed.
+    const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
+    proj6::IGWriter::write(proj6::CSVReader::load(GRAPH),
+                           GRAPH_DIR + "big_bipartite.dot", allocation);
+
+    REQUIRE((verifyAllocation(GRAPH, NUM_REGS, allocation)));
+}
+
+TEST_CASE("Complete6SuccessMarginal", "[Required][RA]") {
+    // Load the graph pointed to by simple.csv
+    const auto &GRAPH = GRAPH_DIR + "complete_6.csv";
+    const auto NUM_REGS = 6;
+
+    // Provide 3 registers to the register allocation algorithm.
+    // Note, the highest degree in this graph is two, so all three
+    // will be needed.
+    const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
+    proj6::IGWriter::write(proj6::CSVReader::load(GRAPH),
+                           GRAPH_DIR + "complete_6.dot", allocation);
+
+    REQUIRE((verifyAllocation(GRAPH, NUM_REGS, allocation)));
+}
+
+TEST_CASE("BigBipartiteSuccessMarginal", "[Required][RA]") {
+    // Load the graph pointed to by simple.csv
+    const auto &GRAPH = GRAPH_DIR + "big_bipartite.csv";
+    const auto NUM_REGS = 5;
+
+    // Provide 3 registers to the register allocation algorithm.
+    // Note, the highest degree in this graph is two, so all three
+    // will be needed.
+    const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
+    proj6::IGWriter::write(proj6::CSVReader::load(GRAPH),
+                           GRAPH_DIR + "big_bipartite.dot", allocation);
+
+    REQUIRE((verifyAllocation(GRAPH, NUM_REGS, allocation)));
+}
+
 TEST_CASE("SimpleFail", "[Required][RA]") {
     // Load the graph pointed to by simple.csv
     const auto &GRAPH = GRAPH_DIR + "simple.csv";
@@ -37,5 +97,33 @@ TEST_CASE("SimpleFail", "[Required][RA]") {
     const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
     REQUIRE((allocation.empty()));
 }
+
+TEST_CASE("Complete6Fail", "[Required][RA]") {
+    // Load the graph pointed to by simple.csv
+    const auto &GRAPH = GRAPH_DIR + "complete_6.csv";
+    const auto NUM_REGS = 5;
+
+    // Provide 3 registers to the register allocation algorithm.
+    // Note, the highest degree in this graph is two, so all three
+    // will be needed.
+    const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
+    REQUIRE((allocation.empty()));
+}
+
+TEST_CASE("BigBipartiteFail", "[Required][RA]") {
+    // Load the graph pointed to by simple.csv
+    const auto &GRAPH = GRAPH_DIR + "big_bipartite.csv";
+    const auto NUM_REGS = 4;
+
+    // Provide 3 registers to the register allocation algorithm.
+    // Note, the highest degree in this graph is two, so all three
+    // will be needed.
+    const auto &allocation = proj6::assignRegisters(GRAPH, NUM_REGS);
+    REQUIRE((allocation.empty()));
+}
+
+// TEST_CASE("SortingTest", "[Required][RA]") {
+
+// }
 
 }  // namespace

@@ -3,6 +3,7 @@
 #include "CSVReader.hpp"
 #include "InterferenceGraph.hpp"
 #include <algorithm>
+#include <iostream>
 
 
 namespace shindler::ics46::project6 {
@@ -22,27 +23,38 @@ RegisterAssignment assignRegisters(const std::string &pathToGraph,
     for (const auto& vertex : igraph.vertices())
     {
         descending_degrees.push_back(vertex);
+        // std::cout << vertex << std::endl;
     }
+    // std::cout << "printed out unordered vertices!" << std::endl;
+
+    // std::cout << "sorting with size " << descending_degrees.size() << std::endl;
 
     // REPLACE LATER
-    // sortDescendingByDegree(descending_degrees);
-    std::sort(descending_degrees.begin(), descending_degrees.end(), 
-    [&](const Variable& a, const Variable& b){
-        return igraph.degree(a) > igraph.degree(b);
-    });
+    sortDescendingByDegree(descending_degrees, descending_degrees.size());
+    // std::sort(descending_degrees.begin(), descending_degrees.end(), 
+    // [&](const Variable& a, const Variable& b){
+    //     return igraph.degree(a) > igraph.degree(b);
+    // });
 
-    
     RegisterAssignment mapping{};
+
+    if (descending_degrees.empty() || igraph.degree(descending_degrees[0]) >= static_cast<unsigned int>(numRegisters))
+    {
+        return mapping;
+    }
 
     for (int num = 1; num <= numRegisters; ++num)
     {
         for (const Variable &vertex : descending_degrees)
         {
+            // std::cout << vertex << std::endl;
             //if it's already colored, go ahead
             if(mapping.find(vertex) != mapping.end())
             {
-                break;
+                // std::cout << "vertex " << vertex << " found " << std::endl;
+                continue;
             }
+            // std::cout << "not already colored? :0" << std::endl;
             //if not, make sure none of the neighbors have the same color
             bool allNeighborsClear = true;
             for (const Variable &neighbor : igraph.neighbors(vertex))
@@ -63,45 +75,56 @@ RegisterAssignment assignRegisters(const std::string &pathToGraph,
     return mapping;
 }
 
-// void sortDescendingByDegree(std::vector<Variable>& vertices)
+void sortDescendingByDegree(std::vector<Variable>& vertices, size_t size)
+{
+    //heapsort!
+    for (int i = (size/2) - 1; i >= 0; --i)
+    {
+        heapify(vertices, size, i);
+    }
+
+
+    for (int i = size - 1; i >= 0; --i)
+    {
+        std::swap(vertices[0], vertices[i]);
+        heapify(vertices, i, 0);
+    }
+
+
+    // if (low >= high)
+    // {
+    //     return vertices;
+    // }
+    // unsigned int med = (low + high) / 2;
+    // mergeStep(mergeSortDescendingByDegree(vertices, low, med+1),
+    //         mergeSortDescendingByDegree(vertices, med+1, high));
+}
+
+void heapify(std::vector<Variable>& vertices, size_t size, size_t root)
+{
+    //finding the minimum of the children
+    // std::cout << "heapifying at index " << root << " and size " << size << std::endl;
+    size_t minIndex = 2*root + 1; //left child
+    if (minIndex >= size)
+    {
+        return;
+    }
+    if (minIndex+1 < size && vertices.at(minIndex+1) < vertices.at(minIndex)) // right child
+    { 
+        ++minIndex; 
+    }
+    //swapping the root and smallest child if root is larger
+    if (vertices.at(minIndex) < vertices.at(root)) 
+    { 
+        std::swap(vertices[root], vertices[minIndex]); 
+        heapify(vertices, size, minIndex);
+    }
+}
+
+// void mergeStep(std::vector<Variable>& vertices, unsigned int low, unsigned int high)
 // {
-//     //heapsort!
-//     for (size_t i = vertices.size()/2; i < vertices.size(); --i)
-//     {
-//         heapify(vertices, i);
-//     }
 
-//     size_t end = vertices.size() - 1;
-//     std::swap(vertices[0], vertices[end--]); //double check this does the thing
-
-//     for (size_t i = 1; i < vertices.size(); ++i, --end)
-//     {
-//         std::swap(vertices[i], vertices[end]);
-//         heapify(vertices, i);
-//     }
-
-
-//     // if (low >= high)
-//     // {
-//     //     return vertices;
-//     // }
-//     // unsigned int med = (low + high) / 2;
-//     // mergeStep(mergeSortDescendingByDegree(vertices, low, med+1),
-//     //         mergeSortDescendingByDegree(vertices, med+1, high));
 // }
-
-// void heapify(std::vector<Variable>& vertices, size_t index)
-// {
-//     size_t minIndex = 2*index + 1;
-//     if(minIndex+1 != vertices.size())
-//     if (vertices.at(minIndex) > vertices.at(minIndex+1)) { ++minIndex; }
-//     if (vertices.at(index) > vertices.at(minIndex)) { std::swap(vertices[index], vertices[minIndex]); }
-// }
-
-// // void mergeStep(std::vector<Variable>& vertices, unsigned int low, unsigned int high)
-// // {
-
-// // }
 
 
 }  // namespace shindler::ics46::project6
