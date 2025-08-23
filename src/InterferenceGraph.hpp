@@ -150,7 +150,11 @@ template <typename T>
 void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
     if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
     {
-        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+        throw shindler::ics46::project6::UnknownVertexException(source);
+    }
+    if(adj.find(destination) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException(destination);
     }
     adj.at(source).insert(destination);
     adj.at(destination).insert(source);
@@ -159,9 +163,17 @@ void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
 
 template <typename T>
 void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
-    if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
+    if(adj.find(source) == adj.end())
     {
-        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+        throw shindler::ics46::project6::UnknownVertexException(source);
+    }
+    if(adj.find(destination) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException(destination);
+    }
+    if(adj.at(source).find(destination) == adj.at(source).end())
+    {
+        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
     }
     adj.at(source).erase(adj.at(source).find(destination));
     adj.at(destination).erase(adj.at(destination).find(source));
@@ -191,9 +203,13 @@ void InterferenceGraph<T>::removeVertex(const T &vertex) {
 template <typename T>
 bool InterferenceGraph<T>::interferes(const T &source,
                                       const T &destination) const {
-    if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
+    if(adj.find(source) == adj.end())
     {
-        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+        throw shindler::ics46::project6::UnknownVertexException(source);
+    }
+    if(adj.find(destination) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException(destination);
     }
     return adj.at(source).find(destination) != adj.at(source).end();
 }
@@ -202,7 +218,7 @@ template <typename T>
 unsigned InterferenceGraph<T>::degree(const T &vertex) const {
     if(adj.find(vertex) == adj.end())
     {
-        throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
+        throw shindler::ics46::project6::UnknownVertexException(vertex);
     }
     return adj.at(vertex).size();
 }
