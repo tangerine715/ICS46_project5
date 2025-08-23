@@ -111,7 +111,7 @@ class InterferenceGraph {
 };
 
 template <typename T>
-InterferenceGraph<T>::InterferenceGraph() {
+InterferenceGraph<T>::InterferenceGraph() : numberOfEdges(0), numberOfVertices(0) {
    
 }
 
@@ -148,7 +148,7 @@ unsigned InterferenceGraph<T>::numEdges() const noexcept {
 
 template <typename T>
 void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
-    if(adj.find(source) == adj.end() || adj.find(destination) == adj.end())
+    if(adj.find(source) == adj.end())
     {
         throw shindler::ics46::project6::UnknownVertexException(source);
     }
@@ -192,6 +192,11 @@ void InterferenceGraph<T>::addVertex(const T &vertex) {
 
 template <typename T>
 void InterferenceGraph<T>::removeVertex(const T &vertex) {
+    if(adj.find(vertex) == adj.end())
+    {
+        throw shindler::ics46::project6::UnknownVertexException(vertex);
+    }
+    numberOfEdges -= degree(vertex);
     for (auto& [other, neighbors] : adj) 
     {
         neighbors.erase(vertex);
