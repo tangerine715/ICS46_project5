@@ -175,6 +175,10 @@ void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
     {
         throw shindler::ics46::project6::UnknownEdgeException(source, destination);
     }
+    if(adj.at(destination).find(source) == adj.at(destination).end())
+    {
+        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
+    }
     adj.at(source).erase(adj.at(source).find(destination));
     adj.at(destination).erase(adj.at(destination).find(source));
     --numberOfEdges;
