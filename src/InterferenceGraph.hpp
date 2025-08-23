@@ -112,7 +112,7 @@ class InterferenceGraph {
 
 template <typename T>
 InterferenceGraph<T>::InterferenceGraph() : numberOfEdges(0), numberOfVertices(0) {
-   
+   throw std::string("there's ma graphhhh");
 }
 
 template <typename T>
