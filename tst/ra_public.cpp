@@ -122,8 +122,8 @@ TEST_CASE("BigBipartiteFail", "[Required][RA]") {
     REQUIRE((allocation.empty()));
 }
 
-// TEST_CASE("SortingTest", "[Required][RA]") {
-
-// }
+TEST_CASE("SortingTest", "[Required][RA]") {
+    
+}
 
 }  // namespace
