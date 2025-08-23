@@ -170,20 +170,19 @@ void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
 
 template <typename T>
 void InterferenceGraph<T>::addVertex(const T &vertex) {
-//     (void) adj[vertex]; //hopefully allowed 
     if(adj.find(vertex) != adj.end())
     {
         return;
     }
-    (void) adj[vertex];
+    adj[vertex] = std::unordered_set<T>{};
     ++numberOfVertices;
 }
 
 template <typename T>
 void InterferenceGraph<T>::removeVertex(const T &vertex) {
-    if(adj.find(vertex) == adj.end())
+    for (auto& [other, neighbors] : adj) 
     {
-        return;
+        neighbors.erase(vertex);
     }
     adj.erase(vertex);
     --numberOfVertices;
