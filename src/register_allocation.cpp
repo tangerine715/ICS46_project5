@@ -23,11 +23,8 @@ RegisterAssignment assignRegisters(const std::string &pathToGraph,
     for (const auto& vertex : igraph.vertices())
     {
         descending_degrees.push_back(vertex);
-        // std::cout << vertex << std::endl;
     }
-    // std::cout << "printed out unordered vertices!" << std::endl;
 
-    // std::cout << "sorting with size " << descending_degrees.size() << std::endl;
 
     // REPLACE LATER
     sortDescendingByDegree(descending_degrees, descending_degrees.size());
@@ -47,14 +44,11 @@ RegisterAssignment assignRegisters(const std::string &pathToGraph,
     {
         for (const Variable &vertex : descending_degrees)
         {
-            // std::cout << vertex << std::endl;
             //if it's already colored, go ahead
             if(mapping.find(vertex) != mapping.end())
             {
-                // std::cout << "vertex " << vertex << " found " << std::endl;
                 continue;
             }
-            // std::cout << "not already colored? :0" << std::endl;
             //if not, make sure none of the neighbors have the same color
             bool allNeighborsClear = true;
             for (const Variable &neighbor : igraph.neighbors(vertex))
@@ -103,7 +97,6 @@ void sortDescendingByDegree(std::vector<Variable>& vertices, size_t size)
 void heapify(std::vector<Variable>& vertices, size_t size, size_t root)
 {
     //finding the minimum of the children
-    // std::cout << "heapifying at index " << root << " and size " << size << std::endl;
     size_t minIndex = 2*root + 1; //left child
     if (minIndex >= size)
     {

@@ -152,8 +152,8 @@ void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
     {
         throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
     }
-    adj[source].insert(destination);
-    adj[destination].insert(source);
+    adj.at(source).insert(destination);
+    adj.at(destination).insert(source);
     ++numberOfEdges;
 }
 
@@ -163,8 +163,8 @@ void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
     {
         throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
     }
-    adj[source].erase(adj[source].find(destination));
-    adj[destination].erase(adj[destination].find(source));
+    adj.at(source).erase(adj.at(source).find(destination));
+    adj.at(destination).erase(adj.at(destination).find(source));
     --numberOfEdges;
 }
 
@@ -196,7 +196,7 @@ bool InterferenceGraph<T>::interferes(const T &source,
     {
         throw shindler::ics46::project6::UnknownVertexException("couldn't find it rip");
     }
-    return adj[source].find(destination) != adj[source].end();
+    return adj.at(source).find(destination) != adj.at(source).end();
 }
 
 template <typename T>
