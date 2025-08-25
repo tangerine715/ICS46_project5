@@ -98,6 +98,40 @@ TEST_CASE("RemoveEdgesAndVertices", "[IG]") {
     REQUIRE(graph.numVertices() == 1);
 }
 
+TEST_CASE("RemoveEdgesAndVertices2", "[IG]") {
+    proj6::InterferenceGraph<std::string> graph;
+    graph.addVertex("x");
+    graph.addVertex("y");
+    graph.addVertex("z");
+    graph.addEdge("x", "y");
+    graph.addEdge("x", "z");
+    graph.removeVertex("x");
+
+    REQUIRE(graph.numEdges() == 0);
+    REQUIRE(graph.numVertices() == 2);
+}
+
+TEST_CASE("RemoveEdgesAndVertices3", "[IG]") {
+    proj6::InterferenceGraph<std::string> graph;
+    graph.addVertex("x");
+    graph.addVertex("y");
+    graph.addVertex("z");
+    graph.addVertex("a");
+    graph.addEdge("x", "y");
+    graph.addEdge("x", "z");
+    REQUIRE(graph.numEdges() == 2);
+    graph.addEdge("z", "x");
+    REQUIRE(graph.numEdges() == 2);
+    graph.addEdge("a", "y");
+    graph.removeVertex("x");
+
+    REQUIRE(graph.numEdges() == 1);
+    REQUIRE(graph.numVertices() == 3);
+    REQUIRE_THROWS_AS(graph.removeEdge("x", "y"), shindler::ics46::project6::UnknownVertexException);
+    REQUIRE_THROWS_AS(graph.removeEdge("z", "y"), shindler::ics46::project6::UnknownEdgeException);
+    REQUIRE(graph.neighbors("y") == std::unordered_set<std::string>{"a"});
+}
+
 
 TEST_CASE("Complete1000", "[IG]") {
     const auto &GRAPH = GRAPH_DIR + "complete_1000.csv";

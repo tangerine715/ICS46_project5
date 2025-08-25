@@ -1,17 +1,17 @@
 graph {
 graph [layout=circo]
 a [style="filled", fillcolor=lightsalmon]
-x [style="filled", fillcolor=lightpink]
 d [style="filled", fillcolor=lightsalmon]
+x [style="filled", fillcolor=lightpink]
 b [style="filled", fillcolor=lightsalmon]
 c [style="filled", fillcolor=lightsalmon]
 y [style="filled", fillcolor=lightpink]
 a -- y
 a -- x
+d -- y
+d -- x
 x -- c
 x -- b
-x -- d
-d -- y
 b -- y
 c -- y
 }

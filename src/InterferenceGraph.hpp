@@ -126,16 +126,16 @@ InterferenceGraph<T>::~InterferenceGraph() {
 
 template <typename T>
 std::unordered_set<T> InterferenceGraph<T>::neighbors(const T &vertex) const {
+    checkVertex(vertex);
     return adj.at(vertex);
 }
 
 template <typename T>
 std::unordered_set<T> InterferenceGraph<T>::vertices() const noexcept {
     std::unordered_set<T> vertex;
-    vertex.reserve(adj.size());
-    for (const auto& [vert, edges] : adj) 
+    for (const auto& pair : adj) 
     { 
-        vertex.insert(vert); 
+        vertex.insert(pair.first); 
     }
     return vertex;
 }
@@ -176,20 +176,16 @@ void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
         adj.at(source).insert(destination);
         adj.at(destination).insert(source);
     }
-    else 
-    {
-        std::cout << "um, hello? duplicate edge " << source << " to " << destination << std::endl;
-    }
 }
 
 template <typename T>
 void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
-    // checkVertex(source);
-    // checkVertex(destination);
+    checkVertex(source);
+    checkVertex(destination);
     checkEdge(source, destination);
-    // adj.at(source).erase(destination);
-    // adj.at(destination).erase(source);
-    // --numberOfEdges;
+    adj.at(source).erase(destination);
+    adj.at(destination).erase(source);
+    --numberOfEdges; //if i got here without exception, i objectively have erased the edge
 }
 
 template <typename T>
@@ -202,13 +198,13 @@ void InterferenceGraph<T>::addVertex(const T &vertex) {
 template <typename T>
 void InterferenceGraph<T>::removeVertex(const T &vertex) {
     checkVertex(vertex);
-    // for (auto& vert : adj.at(vertex)) 
-    // { 
-    //     --numberOfEdges;
-    //     adj.at(vert).erase(vertex); 
-    // }
-    // adj.erase(vertex);
-    // --numberOfVertices;
+    for (auto& vert : adj.at(vertex)) 
+    { 
+        --numberOfEdges;
+        adj.at(vert).erase(vertex); 
+    }
+    adj.erase(vertex);
+    --numberOfVertices;
 }
 
 template <typename T>
