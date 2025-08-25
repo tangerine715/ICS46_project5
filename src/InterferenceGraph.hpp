@@ -169,16 +169,19 @@ template <typename T>
 void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
     checkVertex(source);
     checkVertex(destination);
+    if(!adj.at(source).contains(destination && !adj.at(destination).contains(source)))
+    {
+        ++numberOfEdges;
+    }
     adj.at(source).insert(destination);
     adj.at(destination).insert(source);
-    ++numberOfEdges;
 }
 
 template <typename T>
 void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
-    checkEdge(source, destination);
     checkVertex(source);
     checkVertex(destination);
+    checkEdge(source, destination);
     adj.at(source).erase(destination);
     adj.at(destination).erase(source);
     --numberOfEdges;
