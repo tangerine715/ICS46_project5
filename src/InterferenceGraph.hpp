@@ -68,8 +68,8 @@ class InterferenceGraph {
     // do note speed of SEARCHING (check if this edge exists) is O(1)
 
 
-    unsigned int numberOfEdges;
-    unsigned int numberOfVertices;
+    unsigned int numberOfEdges{};
+    unsigned int numberOfVertices{};
     //this matrix assigns every edge, and every vector row ends in the sum of all the edges
     //(ease of degree computation?)
     
@@ -115,7 +115,7 @@ class InterferenceGraph {
 };
 
 template <typename T>
-InterferenceGraph<T>::InterferenceGraph() : numberOfEdges(0), numberOfVertices(0) {
+InterferenceGraph<T>::InterferenceGraph() {
 }
 
 template <typename T>
@@ -159,11 +159,7 @@ void InterferenceGraph<T>::checkVertex(const T &vertex) const {
 
 template <typename T>
 void InterferenceGraph<T>::checkEdge(const T &source, const T &destination) const {
-    if(!adj.at(source).contains(destination))
-    {
-        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
-    }
-    if(!adj.at(destination).contains(source))
+    if(!adj.at(source).contains(destination) || !adj.at(destination).contains(source))
     {
         throw shindler::ics46::project6::UnknownEdgeException(source, destination);
     }
@@ -180,9 +176,9 @@ void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
 
 template <typename T>
 void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
+    checkEdge(source, destination);
     checkVertex(source);
     checkVertex(destination);
-    checkEdge(source, destination);
     adj.at(source).erase(destination);
     adj.at(destination).erase(source);
     --numberOfEdges;
