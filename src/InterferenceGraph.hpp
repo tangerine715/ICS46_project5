@@ -1,6 +1,7 @@
 #ifndef __PROJ6_INTERFERENCE_GRAPH__HPP
 #define __PROJ6_INTERFERENCE_GRAPH__HPP
 
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -175,6 +176,10 @@ void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
         adj.at(source).insert(destination);
         adj.at(destination).insert(source);
     }
+    else 
+    {
+        std::cout << "um, hello? duplicate edge " << source << " to " << destination << std::endl;
+    }
 }
 
 template <typename T>
@@ -182,9 +187,12 @@ void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
     checkVertex(source);
     checkVertex(destination);
     checkEdge(source, destination);
+    if(!adj.at(source).contains(destination))
+    {
+        --numberOfEdges;
+    }
     adj.at(source).erase(destination);
     adj.at(destination).erase(source);
-    --numberOfEdges;
 }
 
 template <typename T>
