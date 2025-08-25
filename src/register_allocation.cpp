@@ -72,7 +72,6 @@ RegisterAssignment assignRegisters(const std::string &pathToGraph,
 void sortDescendingByDegree(std::vector<Variable>& vertices, size_t size)
 {
     //heapsort!
-    throw std::string("thars the register assignment");
     for (int i = (size/2) - 1; i >= 0; --i)
     {
         heapify(vertices, size, i);

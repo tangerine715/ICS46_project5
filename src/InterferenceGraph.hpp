@@ -86,6 +86,10 @@ class InterferenceGraph {
 
     ~InterferenceGraph();
 
+    void checkVertex(const T &vertex) const;
+
+    void checkEdge(const T &source, const T &destination) const;
+
     void addEdge(const T &source, const T &destination);
 
     void addVertex(const T &vertex);
@@ -128,7 +132,7 @@ template <typename T>
 std::unordered_set<T> InterferenceGraph<T>::vertices() const noexcept {
     std::unordered_set<T> vertex;
     vertex.reserve(adj.size());
-    for (auto& [vert, edges] : adj) 
+    for (const auto& [vert, edges] : adj) 
     { 
         vertex.insert(vert); 
     }
@@ -146,15 +150,29 @@ unsigned InterferenceGraph<T>::numEdges() const noexcept {
 }
 
 template <typename T>
+void InterferenceGraph<T>::checkVertex(const T &vertex) const {
+    if(!adj.contains(vertex))
+    {
+        throw shindler::ics46::project6::UnknownVertexException(vertex);
+    }
+}
+
+template <typename T>
+void InterferenceGraph<T>::checkEdge(const T &source, const T &destination) const {
+    if(!adj.at(source).contains(destination))
+    {
+        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
+    }
+    if(!adj.at(destination).contains(source))
+    {
+        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
+    }
+}
+
+template <typename T>
 void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
-    if(adj.find(source) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(source);
-    }
-    if(adj.find(destination) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(destination);
-    }
+    checkVertex(source);
+    checkVertex(destination);
     adj.at(source).insert(destination);
     adj.at(destination).insert(source);
     ++numberOfEdges;
@@ -162,48 +180,26 @@ void InterferenceGraph<T>::addEdge(const T &source, const T &destination) {
 
 template <typename T>
 void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
-    if(adj.find(source) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(source);
-    }
-    if(adj.find(destination) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(destination);
-    }
-    if(adj.at(source).find(destination) == adj.at(source).end())
-    {
-        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
-    }
-    if(adj.at(destination).find(source) == adj.at(destination).end())
-    {
-        throw shindler::ics46::project6::UnknownEdgeException(source, destination);
-    }
-    adj.at(source).erase(adj.at(source).find(destination));
-    adj.at(destination).erase(adj.at(destination).find(source));
+    checkVertex(source);
+    checkVertex(destination);
+    checkEdge(source, destination);
+    adj.at(source).erase(destination);
+    adj.at(destination).erase(source);
     --numberOfEdges;
 }
 
 template <typename T>
 void InterferenceGraph<T>::addVertex(const T &vertex) {
-    if(adj.find(vertex) != adj.end())
-    {
-        return;
-    }
+    if(adj.contains(vertex)){ return; }
     adj[vertex] = std::unordered_set<T>{};
     ++numberOfVertices;
 }
 
 template <typename T>
 void InterferenceGraph<T>::removeVertex(const T &vertex) {
-    if(adj.find(vertex) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(vertex);
-    }
+    checkVertex(vertex);
     numberOfEdges -= degree(vertex);
-    for (auto& [other, neighbors] : adj) 
-    {
-        neighbors.erase(vertex);
-    }
+    for (auto& pair : adj) { pair.second.erase(vertex); }
     adj.erase(vertex);
     --numberOfVertices;
 }
@@ -211,23 +207,15 @@ void InterferenceGraph<T>::removeVertex(const T &vertex) {
 template <typename T>
 bool InterferenceGraph<T>::interferes(const T &source,
                                       const T &destination) const {
-    if(adj.find(source) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(source);
-    }
-    if(adj.find(destination) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(destination);
-    }
-    return adj.at(source).find(destination) != adj.at(source).end();
+    checkVertex(source);
+    checkVertex(destination);
+    return (adj.at(source).contains(destination)
+        && adj.at(destination).contains(source));
 }
 
 template <typename T>
 unsigned InterferenceGraph<T>::degree(const T &vertex) const {
-    if(adj.find(vertex) == adj.end())
-    {
-        throw shindler::ics46::project6::UnknownVertexException(vertex);
-    }
+    checkVertex(vertex);
     return adj.at(vertex).size();
 }
 
