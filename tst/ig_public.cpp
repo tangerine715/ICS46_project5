@@ -123,6 +123,16 @@ TEST_CASE("Complete1000", "[IG]") {
     REQUIRE(igraph.numVertices() == n);
     REQUIRE(igraph.numEdges() == (n-1)*n/2);
 
+    // for(int i = 1; i <= n/10; ++i)
+    // {
+    //     for(int j = i+1; j <= n/10; ++j)
+    //     {
+    //         const std::string eye = std::to_string(i);
+    //         const std::string jay = std::to_string(j);
+    //         igraph.removeEdge(eye, jay);
+    //     }
+    // }
+
     
 }
 
