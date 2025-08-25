@@ -187,12 +187,12 @@ void InterferenceGraph<T>::removeEdge(const T &source, const T &destination) {
     checkVertex(source);
     checkVertex(destination);
     checkEdge(source, destination);
-    if(!adj.at(source).contains(destination))
+    if(adj.at(source).contains(destination))
     {
         --numberOfEdges;
+        adj.at(source).erase(destination);
+        adj.at(destination).erase(source);
     }
-    adj.at(source).erase(destination);
-    adj.at(destination).erase(source);
 }
 
 template <typename T>

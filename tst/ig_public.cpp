@@ -75,7 +75,7 @@ TEST_CASE("BigBipartiteNeighbors", "[Required][IG]") {
     REQUIRE(igraph.neighbors("a") == expected_neighbors);
 }
 
-TEST_CASE("CheckEdgeExistence", "[IG]") {
+TEST_CASE("CheckEdgeExists", "[IG]") {
     proj6::InterferenceGraph<std::string> graph;
     graph.addVertex("x");
     graph.addVertex("y");
@@ -102,20 +102,20 @@ TEST_CASE("RemoveEdgesAndVertices", "[IG]") {
 TEST_CASE("Complete1000", "[IG]") {
     const auto &GRAPH = GRAPH_DIR + "complete_1000.csv";
     const int n = 1000;  // Number of vertices
-    std::ofstream outfile(GRAPH);
+    // std::ofstream outfile(GRAPH);
 
-    for (int i = 1; i <= n; ++i) {
-        for (int j = i + 1; j <= n; ++j) {
-            if(i!=(n-1) || j!=(n))
-            { 
-                outfile << i << "," << j << '\n'; 
-            }
-            else 
-            {
-                outfile << i << "," << j; 
-            }
-        }
-    }
+    // for (int i = 1; i <= n; ++i) {
+    //     for (int j = i + 1; j <= n; ++j) {
+    //         if(i!=(n-1) || j!=(n))
+    //         { 
+    //             outfile << i << "," << j << '\n'; 
+    //         }
+    //         else 
+    //         {
+    //             outfile << i << "," << j; 
+    //         }
+    //     }
+    // }
 
     const proj6::InterferenceGraph<proj6::Variable> &igraph =
         proj6::CSVReader::load(GRAPH);
